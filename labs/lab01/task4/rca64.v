@@ -25,6 +25,23 @@ module rca64(
   output        cout
 );
 
-  // TODO: your 64-bit ripple-carry structure goes here.
+  wire [64:0] c;
+  assign c[0] = cin;
+
+  genvar i;
+  generate
+    for (i = 0; i < 64; i = i + 1) begin : fa_loop
+      // Instantiating the FA_Gate from Task 2
+      FA_Gate fa_inst (
+        .a(a[i]),
+        .b(b[i]),
+        .cin(c[i]),
+        .sum(sum[i]),
+        .cout(c[i+1])
+      );
+    end
+  endgenerate
+
+  assign cout = c[64];
 
 endmodule
