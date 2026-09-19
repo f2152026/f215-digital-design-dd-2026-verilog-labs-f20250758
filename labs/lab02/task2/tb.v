@@ -6,7 +6,22 @@ module tb;
   // TODO: declare the inputs and outputs
 
   // TODO: instantiate DUT here
+  // Parameters for testing override (DEPTH = 8 requiring 3-bit sel)
+  localparam TEST_WIDTH = 8;
+  localparam TEST_DEPTH = 8;
 
+  // Declare inputs and outputs matching parameterized widths
+  reg  [$clog2(TEST_DEPTH)-1:0] t_sel;
+  wire [TEST_WIDTH-1:0]         t_dout;
+
+  // DUT instantiation with parameter override
+  lut #(
+    .WIDTH(TEST_WIDTH),
+    .DEPTH(TEST_DEPTH)
+  ) DUT (
+    .sel  (t_sel),
+    .dout (t_dout)
+  );
   // Waveform dump configuration (DO NOT CHANGE)
   string vcd_file;
   initial begin
@@ -16,12 +31,16 @@ module tb;
     end
   end
 
+ integer k;
   initial begin
-    // TODO: apply different input combinations
-
+    for (k = 0; k < TEST_DEPTH; k = k + 1) begin
+      t_sel = k;
+      #5;
+    end
+    $finish;
   end
 
   initial
-    $monitor($time, " I0=%b I1=%b S=%b | Y=%b", t_i0, t_i1, t_s, t_y); // change as required
+  $monitor($time, " sel=%0d | dout=%0d", t_sel, t_dout); // change as required
 
 endmodule
